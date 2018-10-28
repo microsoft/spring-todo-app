@@ -39,7 +39,7 @@ The name of Cosmos DB must use only lower case letters. Note down the `documentE
 1. Get your Azure Cosmos DB key, get the `primaryMasterKey`
 
     ```bash
-    az cosmosdb list-keys -g <your-azure-group-name> -n <your-azure-documentDB-name>
+    az cosmosdb list-keys -g <your-azure-group-name> -n <your-azure-COSMOSDB-name>
     ```
 
 ## Running Spring TODO App locally
