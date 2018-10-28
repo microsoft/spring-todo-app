@@ -15,32 +15,40 @@ Cosmos DB](https://docs.microsoft.com/en-us/java/azure/spring-framework/configur
 Create Azure Cosmos DB 
 using [Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) 
 
-1. Login your Azure CLI, and set your subscription 
+### STEP A - LOGIN to Azure
+Login your Azure CLI, and set your subscription 
     
-    ```bash
-    az login
-    az account set -s <your-subscription-id>
-    ```
-1. Create an Azure Resource Group, and note down the resource group name
+```bash
+az login
+az account set -s <your-subscription-id>
+```
+### STEP B - Create Resource Group
 
-    ```bash
-    az group create -n <your-azure-group-name> \
-       -l <your-resource-group-region>
-    ```
+Create an Azure Resource Group, and note down the resource group name
 
-1. Create Azure Cosmos DB with GlobalDocumentDB kind. 
+```bash
+az group create -n <your-azure-group-name> \
+    -l <your-resource-group-region>
+```
+
+### STEP C - Create COSMOS DB
+
+Create Azure Cosmos DB with GlobalDocumentDB kind. 
 The name of Cosmos DB must use only lower case letters. Note down the `documentEndpoint` field in the response
 
-   ```bash
-   az cosmosdb create --kind GlobalDocumentDB \
-       -g <your-azure-group-name> \
-       -n <your-azure-COSMOS-DB-name-in-lower-case-letters>
-   ```
-1. Get your Azure Cosmos DB key, get the `primaryMasterKey`
+```bash
+az cosmosdb create --kind GlobalDocumentDB \
+    -g <your-azure-group-name> \
+    -n <your-azure-COSMOS-DB-name-in-lower-case-letters>
+```
 
-    ```bash
-    az cosmosdb list-keys -g <your-azure-group-name> -n <your-azure-COSMOSDB-name>
-    ```
+### STEP D - Get COSMOS DB Key
+
+Get your Azure Cosmos DB key, get the `primaryMasterKey`
+
+```bash
+az cosmosdb list-keys -g <your-azure-group-name> -n <your-azure-COSMOSDB-name>
+```
 
 ## Running Spring TODO App locally
 
