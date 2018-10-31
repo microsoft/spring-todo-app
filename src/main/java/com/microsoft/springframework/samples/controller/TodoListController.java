@@ -21,12 +21,16 @@ public class TodoListController {
     @Autowired
     private TodoItemRepository todoItemRepository;
 
+    private void logger(String log){
+        System.out.println(new Date() + log);
+    }
+
     public TodoListController() {
     }
 
     @RequestMapping("/home")
     public Map<String, Object> home() {
-        System.out.println(new Date() + " ======= /home =======");
+        logger(" ======= /home =======");
         final Map<String, Object> model = new HashMap<String, Object>();
         model.put("id", UUID.randomUUID().toString());
         model.put("content", "home");
@@ -39,8 +43,7 @@ public class TodoListController {
     @RequestMapping(value = "/api/todolist/{index}",
             method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getTodoItem(@PathVariable("index") String index) {
-        System.out.println(new Date() + " GET ======= /api/todolist/{" + index
-                + "} =======");
+        logger(" GET ======= /api/todolist/{" + index + "} =======");
         try {
             return new ResponseEntity<TodoItem>(todoItemRepository.findById(index).get(), HttpStatus.OK);
         } catch (Exception e) {
@@ -53,7 +56,7 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getAllTodoItems() {
-        System.out.println(new Date() + " GET ======= /api/todolist =======");
+        logger(" GET ======= /api/todolist =======");
         try {
             return new ResponseEntity<>(todoItemRepository.findAll(), HttpStatus.OK);
         } catch (Exception e) {
@@ -66,7 +69,7 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTodoItem(@RequestBody TodoItem item) {
-        System.out.println(new Date() + " POST ======= /api/todolist ======= " + item);
+        logger(" POST ======= /api/todolist ======= " + item);
         try {
             item.setID(UUID.randomUUID().toString());
             todoItemRepository.save(item);
@@ -81,7 +84,7 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateTodoItem(@RequestBody TodoItem item) {
-        System.out.println(new Date() + " PUT ======= /api/todolist ======= " + item);
+        logger(" PUT ======= /api/todolist ======= " + item);
         try {
             todoItemRepository.deleteById(item.getID());
             todoItemRepository.save(item);
@@ -96,8 +99,7 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteTodoItem(@PathVariable("id") String id) {
-        System.out.println(new Date() + " DELETE ======= /api/todolist/{" + id
-                + "} ======= ");
+        logger(" DELETE ======= /api/todolist/{" + id + "} ======= ");
         try {
             todoItemRepository.deleteById(id);
             return new ResponseEntity<String>("Entity deleted", HttpStatus.OK);
