@@ -1,12 +1,13 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for
- * license information.
- */
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.spring.samples;
 
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,25 +23,23 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.azure.spring.samples.controller.TodoListController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.azure.spring.samples.dao.TodoItemRepository;
 import com.azure.spring.samples.model.TodoItem;
 
-@RunWith(SpringRunner.class)
-@TestPropertySource(locations = "classpath:test.properties")
-@WebMvcTest(TodoListController.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers = TodoListController.class)
 public class TodoApplicationTest {
     static final String MOCK_ID = "mockId";
     static final String MOCK_DESC = "Mock Item";
@@ -55,7 +54,7 @@ public class TodoApplicationTest {
     @MockBean
     private TodoItemRepository todoItemRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         repository.clear();
         repository.put(mockItemA.getID(), mockItemA);
@@ -89,7 +88,7 @@ public class TodoApplicationTest {
         }).given(this.todoItemRepository).deleteById(any(String.class));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         repository.clear();
     }

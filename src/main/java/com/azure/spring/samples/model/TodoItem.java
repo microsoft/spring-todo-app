@@ -1,17 +1,19 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for
- * license information.
- */
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.spring.samples.model;
 
-import com.microsoft.azure.spring.data.cosmosdb.core.mapping.Document;
+import com.azure.spring.data.cosmos.core.mapping.Container;
+import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
+import org.springframework.data.annotation.Id;
 
 import java.util.Objects;
 
-@Document
+@Container(containerName = "TodoItem")
 public class TodoItem {
+    @Id
     private String id;
+    @PartitionKey
     private String description;
     private String owner;
     private boolean finished;
@@ -79,9 +81,11 @@ public class TodoItem {
 
     @Override
     public String toString() {
-        if (id != null)
+        if (id != null) {
             return id + ": " + description;
-        else return description;
+        } else {
+            return description;
+        }
     }
 }
 

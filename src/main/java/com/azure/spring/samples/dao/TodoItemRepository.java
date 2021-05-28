@@ -1,14 +1,12 @@
-/**
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for
- * license information.
- */
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 package com.azure.spring.samples.dao;
 
+import com.azure.spring.data.cosmos.repository.CosmosRepository;
 import com.azure.spring.samples.model.TodoItem;
-import com.microsoft.azure.spring.data.cosmosdb.repository.DocumentDbRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TodoItemRepository extends DocumentDbRepository<TodoItem, String> {
+public interface TodoItemRepository extends CosmosRepository<TodoItem, String> {
 }
