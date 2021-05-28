@@ -72,9 +72,9 @@ Edit .scripts/set-env-variables.sh and supply Azure
 Cosmos DB connection info. Particularly:
 
 ```bash
-export COSMOS_URI=<put-your-COSMOS-DB-documentEndpoint-URI-here>
-export COSMOS_KEY=<put-your-COSMOS-DB-primaryMasterKey-here>
-export COSMOS_DATABASE=<put-your-COSMOS-DATABASE-name-here>
+export COSMOSDB_URI=<put-your-COSMOS-DB-documentEndpoint-URI-here>
+export COSMOSDB_KEY=<put-your-COSMOS-DB-primaryMasterKey-here>
+export COSMOSDB_DBNAME=<put-your-COSMOS-DB-name-here>
 ```
     
     
