@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See LICENSE in the project root for
  * license information.
  */
-package com.microsoft.springframework.samples;
+package com.azure.spring.samples;
 
 import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.*;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.microsoft.springframework.samples.controller.TodoListController;
+import com.azure.spring.samples.controller.TodoListController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +35,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.microsoft.springframework.samples.dao.TodoItemRepository;
-import com.microsoft.springframework.samples.model.TodoItem;
+import com.azure.spring.samples.dao.TodoItemRepository;
+import com.azure.spring.samples.model.TodoItem;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "classpath:test.properties")
