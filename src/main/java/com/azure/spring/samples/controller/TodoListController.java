@@ -3,6 +3,7 @@
 
 package com.azure.spring.samples.controller;
 
+import com.azure.cosmos.models.PartitionKey;
 import com.azure.spring.samples.dao.TodoItemRepository;
 import com.azure.spring.samples.model.TodoItem;
 import org.slf4j.Logger;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -35,7 +38,7 @@ public class TodoListController {
 
     @RequestMapping("/home")
     public Map<String, Object> home() {
-        logger.info(new Date() + " ======= /home =======");
+        logger.info("Request '/home' path.");
         final Map<String, Object> model = new HashMap<String, Object>();
         model.put("id", UUID.randomUUID().toString());
         model.put("content", "home");
@@ -48,7 +51,7 @@ public class TodoListController {
     @RequestMapping(value = "/api/todolist/{index}",
         method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getTodoItem(@PathVariable("index") String index) {
-        logger.info(new Date() + " GET ======= /api/todolist/{" + index + "} =======");
+        logger.info("GET request access '/api/todolist/{}' path.", index);
         try {
             return new ResponseEntity<TodoItem>(todoItemRepository.findById(index).get(), HttpStatus.OK);
         } catch (Exception e) {
@@ -61,9 +64,14 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> getAllTodoItems() {
-        logger.info(new Date() + " GET ======= /api/todolist =======");
+        logger.info("GET request access '/api/todolist' path.");
         try {
-            return new ResponseEntity<>(todoItemRepository.findAll(), HttpStatus.OK);
+            List<TodoItem> todoItems = new ArrayList<>();
+            Iterable<TodoItem> iterable = todoItemRepository.findAll();
+            if (iterable != null) {
+                iterable.forEach(todoItems::add);
+            }
+            return new ResponseEntity<>(todoItems, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Nothing found", HttpStatus.NOT_FOUND);
         }
@@ -74,13 +82,13 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTodoItem(@RequestBody TodoItem item) {
-        logger.info(new Date() + " POST ======= /api/todolist ======= " + item);
+        logger.info("POST request access '/api/todolist' path with item: {}", item);
         try {
-            item.setID(UUID.randomUUID().toString());
+            item.setId(UUID.randomUUID().toString());
             todoItemRepository.save(item);
-            return new ResponseEntity<String>("Entity created", HttpStatus.CREATED);
+            return new ResponseEntity<>("Entity created", HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Entity creation failed", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Entity creation failed", HttpStatus.CONFLICT);
         }
     }
 
@@ -89,13 +97,18 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateTodoItem(@RequestBody TodoItem item) {
-        logger.info(new Date() + " PUT ======= /api/todolist ======= " + item);
+        logger.info("PUT request access '/api/todolist' path with item {}", item);
         try {
-            todoItemRepository.deleteById(item.getID());
-            todoItemRepository.save(item);
-            return new ResponseEntity<String>("Entity updated", HttpStatus.OK);
+            Optional<TodoItem> todoItem = todoItemRepository.findById(item.getId());
+            if (todoItem.isPresent()) {
+                todoItemRepository.deleteById(item.getId(), new PartitionKey(todoItem.get().getDescription()));
+                todoItemRepository.save(item);
+                return new ResponseEntity<>("Entity updated", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Not found the entity", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Entity updating failed", HttpStatus.NOT_FOUND);
+            logger.error("Delete and save errors: ", e);
+            return new ResponseEntity<>("Entity updating failed", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -104,13 +117,17 @@ public class TodoListController {
      */
     @RequestMapping(value = "/api/todolist/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteTodoItem(@PathVariable("id") String id) {
-        logger.info(new Date() + " DELETE ======= /api/todolist/{" + id
-            + "} ======= ");
+        logger.info("DELETE request access '/api/todolist/{}' path.", id);
         try {
-            todoItemRepository.deleteById(id);
-            return new ResponseEntity<String>("Entity deleted", HttpStatus.OK);
+            Optional<TodoItem> todoItem = todoItemRepository.findById(id);
+            if (todoItem.isPresent()) {
+                todoItemRepository.deleteById(id, new PartitionKey(todoItem.get().getDescription()));
+                return new ResponseEntity<>("Entity deleted", HttpStatus.OK);
+            }
+            return new ResponseEntity<>("Not found the entity", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Entity deletion failed", HttpStatus.NOT_FOUND);
+            logger.error("Delete errors: ", e);
+            return new ResponseEntity<>("Entity deletion failed", HttpStatus.NOT_FOUND);
         }
 
     }
